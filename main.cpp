@@ -45,7 +45,8 @@ class Collegian : public Teacher {
     public:
         vector<string> collegian;
         Collegian() {
-            ifstream.file("collegianlist0.txt");
+            //Read data for
+            ifstream file("collegianlist0.txt");
             string line;
             while (getline(file, line)) {
                 collegian.push_back(line);
