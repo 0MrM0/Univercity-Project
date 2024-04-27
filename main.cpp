@@ -28,6 +28,12 @@ class Data_base
             fstream cl4("collegianlist4.txt");
             fstream cl5("collegianlist5.txt");
         }
+        const string& getUser(size_t index) const {
+            return User[index];
+        }
+        const string& getpass(size_t index) const {
+            return Pass[index];
+        }
 };
 
 class Teacher : public Data_base {
@@ -65,11 +71,33 @@ int main()
     Teacher Lotfi;
     string username;
     string password;
+    int Passcunter = 3;
     do {
         cout << "Enter Username: " << endl;
         cin >> username;
-    }while(username != Lotfi.User[0]);
-
+    } while(Lotfi.getUser(0) != username);
+    do {
+        cout << "Enter Password: " << endl;
+        cin >> password;
+        if (password == "Forget") {
+            // First need change something in Teacher class
+            cout << "Success Password is changed" << endl; // For test
+            Passcunter = 3;
+        }
+        else if (password != Lotfi.getpass(0) && Passcunter == 0) {
+            cout << "Wrong pass! Try another 30 min" << endl; // Need get time from system
+            break;
+        }
+        else if (password != Lotfi.getpass(0)) {
+            cout << "Wrong pass! You have " << Passcunter << " try" << endl;
+            cout << "Forget pass? (*hint* type \"Forget\" to check and change password)" << endl;
+            Passcunter--;
+        }
+        if (password == Lotfi.getpass(0)) {
+            cout << "Welcome " << Lotfi.getUser(0) << endl;
+            break;
+        }
+    } while (Passcunter != 0);
     return 0;
 }
 
