@@ -8,13 +8,6 @@ using namespace std;
 class Data_base
 {
     // make Data_base class way can use it for inhirate
-    private:
-        fstream cl0("collegianlist0.txt");
-        fstream cl1("collegianlist1.txt");
-        fstream cl2("collegianlist2.txt");
-        fstream cl3("collegianlist3.txt");
-        fstream cl4("collegianlist4.txt");
-        fstream cl5("collegianlist5.txt");
     protected:
         vector<string> Username;
         vector<string> Pass;
@@ -25,7 +18,13 @@ class Data_base
         vector<string> discription_multiplechoice;
     public:
         Data_base() {
-            //make space by constructor
+            //make space by constructor & make some files use for collegian list
+            fstream cl0("collegianlist0.txt");
+            fstream cl1("collegianlist1.txt");
+            fstream cl2("collegianlist2.txt");
+            fstream cl3("collegianlist3.txt");
+            fstream cl4("collegianlist4.txt");
+            fstream cl5("collegianlist5.txt");
         }
 };
 
