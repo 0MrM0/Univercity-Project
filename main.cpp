@@ -20,9 +20,20 @@ class Data_base
         vector<string> discription_descrptive;
         vector<string> discription_multiplechoice;
     public:
-        void Data_base() {
-            //make space by constactor
-        };
+        Data_base() {
+            //make space by constructor
+        }
+};
+
+class Teacher : public Data_base {
+    public:
+        Teacher() {
+        }
+        Username.push_back("DrLotfi");
+
+
+
+
 };
 
 int main()
