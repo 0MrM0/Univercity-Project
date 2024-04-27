@@ -57,6 +57,17 @@ class Collegian : public Teacher {
 
 int main()
 {
+    ifstream inputfile("C:\\path\\to\\Welcome.txt");
+    string welcomemassage;
+    string firstLine;
+    while (getline(inputfile, welcomemassage)){
+        firstLine += welcomemassage + "\n";
+    }
+    cout << firstLine << endl;
+    inputfile.close();
+    cout << "Enter Username: ";
+    //get it and check with data in Username vector can find it?
+    cout << "Enter Pass: ";
 
     return 0;
 }
