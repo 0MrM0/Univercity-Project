@@ -54,28 +54,42 @@ class Collegian : public Teacher {
         vector<string> collegian;
         Collegian() {
             //Read data for
-            ifstream file("collegianlist0.txt");
+            ifstream file("collegianlist0.txt"); //for now just me in the list
             string line;
             while (getline(file, line)) {
                 collegian.push_back(line);
-                User.push_back(line);
             }
             file.close();
+            ifstream collegianUser("collegianUser.txt"); //for now just me in the list
+            string collegianUserline;
+            while (getline(collegianUser, collegianUserline)) {
+                collegian.push_back(collegianUserline);
+            }
+            collegianUser.close();
+            ifstream collegianPass("collegianPass.txt"); //for now just me in the list
+            string collegianPassline;
+            while (getline(collegianPass, collegianPassline)) {
+                collegian.push_back(collegianPassline);
+            }
+            collegianPass.close();
         }
 };
 
 void Welcomemassage();
-bool authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, string& password);
+bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, string& password);
+bool C_authenticateUser(Collegian& Mohamadmahdikazemi, int& Passcunter, string& username, string& password);
 
 int main()
 {
     Welcomemassage();
     Teacher Lotfi;
+    Collegian Mohamadmahdikazemi;
     string username;
     string password;
     int Passcunter = 3;
-    bool isAuthenticated = authenticateUser(Lotfi, Passcunter, username, password);
-    if (!isAuthenticated) {
+    bool isTAuthenticated = T_authenticateUser(Lotfi, Passcunter, username, password); //isTAuthenticated for teachers
+    bool isCAuthenticated = C_authenticateUser(Mohamadmahdikazemi, Passcunter, username, password); //isCAuthenticated for callegian
+    if (!isTAuthenticated) {
         // Handle authentication failure
     }
     // Continue with the rest of the program
@@ -92,7 +106,7 @@ void Welcomemassage() {
     cout << firstLine << endl;
     inputfile.close();
 }
-bool authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, string& password) {
+bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, string& password) {
     do {
         cout << "Enter Username: " << endl;
         cin >> username;
@@ -118,6 +132,40 @@ bool authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, string&
             cout << "Welcome " << Lotfi.getUser(0) << endl;
             return true;
         }
-    } while (Passcunter != 0);
+    } while (Passcunter >= 0);
+    return false;
+}
+bool C_authenticateUser(Collegian& Mohamadmahdikazemi, int& Passcunter, string& username, string& password){
+    bool calleguser = false;
+    do {
+        cout << "Enter Username: " << endl;
+        cin >> username;
+        for (int i = 0; i < Mohamadmahdikazemi.getUser.size(); ++i) {
+
+            if (getuser(i) == username);
+        }
+    } while(!calleguser);
+    do {
+        cout << "Enter Password: " << endl;
+        cin >> password;
+        if (password == "Forget") {
+            // First need change something in Teacher class
+            cout << "Success Password is changed" << endl; // For test
+            Passcunter = 3;
+        }
+        else if (password != Mohamadmahdikazemi.getpass(0) && Passcunter == 0) {
+            cout << "Wrong pass! Try another 30 min" << endl; // Need get time from system
+            break;
+        }
+        else if (password != Mohamadmahdikazemi.getpass(0)) {
+            cout << "Wrong pass! You have " << Passcunter << " try" << endl;
+            cout << "Forget pass? (*hint* type \"Forget\" to check and change password)" << endl;
+            Passcunter--;
+        }
+        if (password == Mohamadmahdikazemi.getpass(0)) {
+            cout << "Welcome " << Mohamadmahdikazemi.getUser(0) << endl;
+            return true;
+        }
+    } while (Passcunter >= 0);
     return false;
 }
