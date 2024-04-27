@@ -6,7 +6,6 @@
 
 using namespace std;
 
-void Welcomemassage();
 class Data_base
 {
     // make Data_base class way can use it for inhirate
@@ -65,6 +64,9 @@ class Collegian : public Teacher {
         }
 };
 
+void Welcomemassage();
+bool authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, string& password);
+
 int main()
 {
     Welcomemassage();
@@ -72,6 +74,25 @@ int main()
     string username;
     string password;
     int Passcunter = 3;
+    bool isAuthenticated = authenticateUser(Lotfi, Passcunter, username, password);
+    if (!isAuthenticated) {
+        // Handle authentication failure
+    }
+    // Continue with the rest of the program
+    return 0;
+}
+
+void Welcomemassage() {
+    ifstream inputfile("C:\\path\\to\\Welcome.txt");
+    string welcomemassage;
+    string firstLine;
+    while (getline(inputfile, welcomemassage)){
+        firstLine += welcomemassage + "\n";
+    }
+    cout << firstLine << endl;
+    inputfile.close();
+}
+bool authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, string& password) {
     do {
         cout << "Enter Username: " << endl;
         cin >> username;
@@ -95,19 +116,8 @@ int main()
         }
         if (password == Lotfi.getpass(0)) {
             cout << "Welcome " << Lotfi.getUser(0) << endl;
-            break;
+            return true;
         }
     } while (Passcunter != 0);
-    return 0;
-}
-
-void Welcomemassage() {
-    ifstream inputfile("C:\\path\\to\\Welcome.txt");
-    string welcomemassage;
-    string firstLine;
-    while (getline(inputfile, welcomemassage)){
-        firstLine += welcomemassage + "\n";
-    }
-    cout << firstLine << endl;
-    inputfile.close();
+    return false;
 }
