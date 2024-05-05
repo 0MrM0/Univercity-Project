@@ -20,12 +20,12 @@ class Data_base
     public:
         Data_base() {
             //make space by constructor & make some files use for collegian list
-            fstream cl0("collegianlist0.txt");
-            fstream cl1("collegianlist1.txt");
-            fstream cl2("collegianlist2.txt");
-            fstream cl3("collegianlist3.txt");
-            fstream cl4("collegianlist4.txt");
-            fstream cl5("collegianlist5.txt");
+            fstream cl0("C:\\path\\to\\collegianlist0.txt");
+            fstream cl1("C:\\path\\to\\collegianlist1.txt");
+            fstream cl2("C:\\path\\to\\collegianlist2.txt");
+            fstream cl3("C:\\path\\to\\collegianlist3.txt");
+            fstream cl4("C:\\path\\to\\collegianlist4.txt");
+            fstream cl5("C:\\path\\to\\collegianlist5.txt");
         }
         const string& getUser(size_t index) const {
             return User[index];
@@ -54,22 +54,22 @@ class Collegian : public Teacher {
         vector<string> collegian;
         Collegian() {
             //Read data for
-            ifstream file("collegianlist0.txt"); //for now just me in the list
+            ifstream file("C:\\path\\to\\collegianlist0.txt"); //for now just me in the list
             string line;
             while (getline(file, line)) {
                 collegian.push_back(line);
             }
             file.close();
-            ifstream collegianUser("collegianUser.txt"); //for now just me in the list
+            ifstream collegianUser("C:\\path\\to\\collegianUser.txt"); //for now just me in the list
             string collegianUserline;
             while (getline(collegianUser, collegianUserline)) {
                 collegian.push_back(collegianUserline);
             }
             collegianUser.close();
-            ifstream collegianPass("collegianPass.txt"); //for now just me in the list
+            ifstream collegianPass("C:\\path\\to\\collegianPass.txt"); //for now just me in the list
             string collegianPassline;
             while (getline(collegianPass, collegianPassline)) {
-                collegian.push_back(collegianPassline);
+                Pass.push_back(collegianPassline);
             }
             collegianPass.close();
         }
@@ -77,22 +77,32 @@ class Collegian : public Teacher {
 
 void Welcomemassage();
 bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, string& password);
-bool C_authenticateUser(Collegian& Mohamadmahdikazemi, int& Passcunter, string& username, string& password);
+bool C_authenticateUser(Collegian& Me, int& Passcunter, string& username, string& password);
 
 int main()
 {
     Welcomemassage();
     Teacher Lotfi;
-    Collegian Mohamadmahdikazemi;
+    Collegian Me;
     string username;
     string password;
+    char type;
     int Passcunter = 3;
-    bool isTAuthenticated = T_authenticateUser(Lotfi, Passcunter, username, password); //isTAuthenticated for teachers
-    bool isCAuthenticated = C_authenticateUser(Mohamadmahdikazemi, Passcunter, username, password); //isCAuthenticated for callegian
-    if (!isTAuthenticated) {
-        // Handle authentication failure
+    cout << "who you are?\n a)Teacher b)Callegian c)Admin" << endl;
+    cin >> type;
+    if (type == 'a') {
+        bool isTAuthenticated = T_authenticateUser(Lotfi, Passcunter, username, password); //isTAuthenticated for teachers
+        if (!isTAuthenticated) {
+            // Handle authentication failure
+        }
+        // Continue with the rest of the program
+    } else {
+        bool isCAuthenticated = C_authenticateUser(Me, Passcunter, username, password); //isCAuthenticated for callegian
+        if (!isCAuthenticated) {
+            // Handle authentication failure
+        }
+        // Continue with the rest of the program
     }
-    // Continue with the rest of the program
     return 0;
 }
 
@@ -135,14 +145,16 @@ bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, strin
     } while (Passcunter >= 0);
     return false;
 }
-bool C_authenticateUser(Collegian& Mohamadmahdikazemi, int& Passcunter, string& username, string& password){
+bool C_authenticateUser(Collegian& Me, int& Passcunter, string& username, string& password){
     bool calleguser = false;
     do {
         cout << "Enter Username: " << endl;
         cin >> username;
-        for (int i = 0; i < Mohamadmahdikazemi.getUser.size(); ++i) {
-
-            if (getuser(i) == username);
+        for (size_t i = 0; i < Me.collegian.size(); ++i) {
+            if (Me.collegian[i] == username) {
+                calleguser = true;
+                break; // خروج از حلقه اگر نام کاربری پیدا شد
+            }
         }
     } while(!calleguser);
     do {
@@ -153,17 +165,17 @@ bool C_authenticateUser(Collegian& Mohamadmahdikazemi, int& Passcunter, string& 
             cout << "Success Password is changed" << endl; // For test
             Passcunter = 3;
         }
-        else if (password != Mohamadmahdikazemi.getpass(0) && Passcunter == 0) {
+        else if (password != Me.getpass() && Passcunter == 0) {
             cout << "Wrong pass! Try another 30 min" << endl; // Need get time from system
             break;
         }
-        else if (password != Mohamadmahdikazemi.getpass(0)) {
+        else if (password != Me.getpass()) {
             cout << "Wrong pass! You have " << Passcunter << " try" << endl;
             cout << "Forget pass? (*hint* type \"Forget\" to check and change password)" << endl;
             Passcunter--;
         }
-        if (password == Mohamadmahdikazemi.getpass(0)) {
-            cout << "Welcome " << Mohamadmahdikazemi.getUser(0) << endl;
+        if (password == Me.getpass()) {
+            cout << "Welcome " << Me.getUser() << endl;
             return true;
         }
     } while (Passcunter >= 0);
