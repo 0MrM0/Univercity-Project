@@ -19,7 +19,6 @@ class Data_base
         vector<double> collegian_point;
         vector<string> discription_descrptive;
         vector<string> discription_multiplechoice;
-        vector<string> loginhistory;
     public:
         Data_base() {
             //make space by constructor & make some files use for collegian list
@@ -35,9 +34,6 @@ class Data_base
         }
         const string& getpass(size_t index) const {
             return Pass[index];
-        }
-        void addloginhistory(const string& login) {
-            loginhistory.push_back(login);
         }
 };
 
@@ -82,7 +78,6 @@ class Collegian : public Teacher {
 };
 
 void Welcomemassage();
-string login();
 bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, string& password);
 bool C_authenticateUser(Collegian& Student, int& Passcunter, string& username, string& password);
 
@@ -110,8 +105,6 @@ int main()
         }
         // Continue with the rest of the program
     }
-    Lotfi.addloginhistory(login());
-    Student.addloginhistory(login());
     return 0;
 }
 
@@ -189,10 +182,4 @@ bool C_authenticateUser(Collegian& Student, int& Passcunter, string& username, s
         }
     } while (Passcunter >= 0);
     return false;
-}
-string login() {
-    auto current_time = chrono::system_clock::now(); // Get the current time as system_clock object
-    time_t end_time = chrono::system_clock::to_time_t(current_time); // Convert to time_t type
-    cout << "Current time and date: " << ctime(&end_time) << endl;
-    return ctime(&end_time);
 }
