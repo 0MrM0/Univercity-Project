@@ -12,13 +12,13 @@ class Data_base
 {
     // make Data_base class way can use it for inhirate
     protected:
-        vector<string> User;
-        vector<string> Pass;
-        vector<int>    collegian_list = {0, 1, 2, 3, 4 ,5}; //techer just can make 5 list
+        static vector<string> User;
+        static  vector<string> Pass;
+        vector<int> collegian_list = {0, 1, 2, 3, 4 ,5}; //techer just can make 5 list
         //0 in collegian_list for all list,other customize
-        vector<double> collegian_point;
-        vector<string> discription_descrptive;
-        vector<string> discription_multiplechoice;
+        static vector<double> collegian_point;
+        static vector<string> discription_descrptive;
+        static vector<string> discription_multiplechoice;
     public:
         Data_base() {
             //make space by constructor & make some files use for collegian list
@@ -44,31 +44,21 @@ class Teacher : public Data_base {
         vector<string> Multiplechoice_questions;
         vector<char>   Multiplechoice_answer;
     public:
-        Teacher()
-        {
-            User.push_back("Dr.Lotfi");
-            Pass.push_back("Lotfi123");
-        }
+        Teacher() {}
 };
 
 class Collegian : public Teacher {
     public:
         vector<string> collegian;
         Collegian() {
-            //Read data for
-            ifstream file("C:\\path\\to\\collegianlist.csv"); //for now just me in the list
-            string line;
-            while (getline(file, line)) {
-                collegian.push_back(line);
-            }
-            file.close();
-            ifstream collegianUser("C:\\path\\to\\collegianUser.csv"); //for now just me in the list
+            ifstream collegianUser("C:\\path\\to\\collegianUser.csv");
             string collegianUserline;
             while (getline(collegianUser, collegianUserline)) {
                 collegian.push_back(collegianUserline);
+                   User.push_back(collegianUserline);
             }
             collegianUser.close();
-            ifstream collegianPass("C:\\path\\to\\collegianPass.csv"); //for now just me in the list
+            ifstream collegianPass("C:\\path\\to\\collegianPass.csv");
             string collegianPassline;
             while (getline(collegianPass, collegianPassline)) {
                 Pass.push_back(collegianPassline);
@@ -99,7 +89,7 @@ int main()
         }
         // Continue with the rest of the program
     } else {
-        bool isCAuthenticated = C_authenticateUser(Me, Passcunter, username, password); //isCAuthenticated for callegian
+        bool isCAuthenticated = C_authenticateUser(Student, Passcunter, username, password); //isCAuthenticated for callegian
         if (!isCAuthenticated) {
             // Handle authentication failure
         }
@@ -122,7 +112,7 @@ bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, strin
     do {
         cout << "Enter Username: " << endl;
         cin >> username;
-    } while(Lotfi.getUser(0) != username);
+    } while(username != "Dr.Lotfi");
     do {
         cout << "Enter Password: " << endl;
         cin >> password;
@@ -131,55 +121,58 @@ bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, strin
             cout << "Success Password is changed" << endl; // For test
             Passcunter = 3;
         }
-        else if (password != Lotfi.getpass(0) && Passcunter == 0) {
+        else if ((password != "Lotfi123") && (Passcunter == 0)) {
             cout << "Wrong pass! Try another 30 min" << endl; // Need get time from system
             break;
         }
-        else if (password != Lotfi.getpass(0)) {
+        else if (password != "Lotfi123") {
             cout << "Wrong pass! You have " << Passcunter << " try" << endl;
             cout << "Forget pass? (*hint* type \"Forget\" to check and change password)" << endl;
             Passcunter--;
         }
-        if (password == Lotfi.getpass(0)) {
-            cout << "Welcome " << Lotfi.getUser(0) << endl;
+        if (password == "Lotfi123") {
+            cout << "Welcome Dr.Lotfi" << endl;
             return true;
         }
     } while (Passcunter >= 0);
     return false;
 }
-bool C_authenticateUser(Collegian& Student, int& Passcunter, string& username, string& password){
+bool C_authenticateUser(Collegian& Student, int& Passcunter, string& username, string& password) {
     bool calleguser = false;
     do {
         cout << "Enter Username: " << endl;
         cin >> username;
-        for (size_t i = 0; i < Student.collegian.size(); ++i) {
-            if (Student.collegian[i] == username) {
-                calleguser = true;
-                break; // exite floor if find Username
-            }
+        // Find the index of the entered username in the User vector
+        auto it = find(Student.User.begin(), Student.User.end(), username);
+        if (it != Student.User.end()) {
+            calleguser = true;
+            size_t userIndex = distance(Student.User.begin(), it);
+            do {
+                cout << "Enter Password: " << endl;
+                cin >> password;
+                if (password == "Forget") {
+                    // Implement password change logic here
+                    cout << "Success Password is changed" << endl; // For test
+                    Passcunter = 3;
+                }
+                else if (password != Student.getpass(userIndex) && Passcunter == 0) {
+                    cout << "Wrong pass! Try another 30 min" << endl; // Implement wait logic here
+                    break;
+                }
+                else if (password != Student.getpass(userIndex)) {
+                    cout << "Wrong pass! You have " << Passcunter << " try" << endl;
+                    cout << "Forget pass? (*hint* type \"Forget\" to check and change password)" << endl;
+                    Passcunter--;
+                }
+                if (password == Student.getpass(userIndex)) {
+                    cout << "Welcome " << Student.getUser(userIndex) << endl;
+                    return true;
+                }
+            } while (Passcunter >= 0);
         }
-    } while(!calleguser);
-    do {
-        cout << "Enter Password: " << endl;
-        cin >> password;
-        if (password == "Forget") {
-            // First need change something in Teacher class
-            cout << "Success Password is changed" << endl; // For test
-            Passcunter = 3;
+        else {
+            cout << "Username not found. Please try again." << endl;
         }
-        else if (password != Student.getpass() && Passcunter == 0) {
-            cout << "Wrong pass! Try another 30 min" << endl; // Need get time from system
-            break;
-        }
-        else if (password != Student.getpass()) {
-            cout << "Wrong pass! You have " << Passcunter << " try" << endl;
-            cout << "Forget pass? (*hint* type \"Forget\" to check and change password)" << endl;
-            Passcunter--;
-        }
-        if (password == Student.getpass()) {
-            cout << "Welcome " << Student.getUser() << endl;
-            return true;
-        }
-    } while (Passcunter >= 0);
+    } while (!calleguser);
     return false;
 }
