@@ -145,7 +145,7 @@ bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, strin
     } while (Passcunter >= 0);
     return false;
 }
-bool C_authenticateUser(Collegian& Student, int& Passcunter, string& username, string& password){
+/*bool C_authenticateUser(Collegian& Student, int& Passcunter, string& username, string& password){
     bool calleguser = false;
     do {
         cout << "Enter Username: " << endl;
@@ -165,19 +165,19 @@ bool C_authenticateUser(Collegian& Student, int& Passcunter, string& username, s
             cout << "Success Password is changed" << endl; // For test
             Passcunter = 3;
         }
-        else if (password != Student.getpass && Passcunter == 0) {
+        else if (password != Student.getpass() && Passcunter == 0) {
             cout << "Wrong pass! Try another 30 min" << endl; // Need get time from system
             break;
         }
-        else if (password != Student.getpass) {
+        else if (password != Student.getpass()) {
             cout << "Wrong pass! You have " << Passcunter << " try" << endl;
             cout << "Forget pass? (*hint* type \"Forget\" to check and change password)" << endl;
             Passcunter--;
         }
-        if (password == Student.getpass) {
-            cout << "Welcome " << Student.getUser << endl;
+        if (password == Student.getpass()) {
+            cout << "Welcome " << Student.getUser() << endl;
             return true;
         }
     } while (Passcunter >= 0);
     return false;
-}
+}*/
