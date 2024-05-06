@@ -12,7 +12,7 @@ class Data_base
 {
     // make Data_base class way can use it for inhirate
     protected:
-        static vector<string> User;
+        static  vector<string> User;
         static  vector<string> Pass;
         vector<int> collegian_list = {0, 1, 2, 3, 4 ,5}; //techer just can make 5 list
         //0 in collegian_list for all list,other customize
@@ -35,6 +35,13 @@ class Data_base
         const string& getpass(size_t index) const {
             return Pass[index];
         }
+        static vector<string>::const_iterator findUser(const string& username) {
+            return std::find(User.begin(), User.end(), username);
+        }// Public member function to check if a username exists in the User vector
+        static bool userExists(vector<string>::const_iterator it) {
+            return it != User.end();
+        } // Public member function to get the index of a username in the User vector
+        static size_t getUserIndex(vector<string>::const_iterator it);
 };
 
 class Teacher : public Data_base {
@@ -54,8 +61,7 @@ class Collegian : public Teacher {
             ifstream collegianUser("C:\\path\\to\\collegianUser.csv");
             string collegianUserline;
             while (getline(collegianUser, collegianUserline)) {
-                collegian.push_back(collegianUserline);
-                   User.push_back(collegianUserline);
+                User.push_back(collegianUserline);
             }
             collegianUser.close();
             ifstream collegianPass("C:\\path\\to\\collegianPass.csv");
@@ -138,41 +144,36 @@ bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, strin
     return false;
 }
 bool C_authenticateUser(Collegian& Student, int& Passcunter, string& username, string& password) {
-    bool calleguser = false;
-    do {
-        cout << "Enter Username: " << endl;
+    while (true) {
+        cout << "Enter Username: ";
         cin >> username;
-        // Find the index of the entered username in the User vector
-        auto it = find(Student.User.begin(), Student.User.end(), username);
-        if (it != Student.User.end()) {
-            calleguser = true;
-            size_t userIndex = distance(Student.User.begin(), it);
-            do {
-                cout << "Enter Password: " << endl;
-                cin >> password;
-                if (password == "Forget") {
-                    // Implement password change logic here
-                    cout << "Success Password is changed" << endl; // For test
-                    Passcunter = 3;
-                }
-                else if (password != Student.getpass(userIndex) && Passcunter == 0) {
-                    cout << "Wrong pass! Try another 30 min" << endl; // Implement wait logic here
+
+        auto it = Data_base::findUser(username);
+        if (Data_base::userExists(it)) {
+            size_t userIndex = Data_base::getUserIndex(it);
+
+            cout << "Enter Password: ";
+            cin >> password;
+
+            if (password == "Forget") {
+                // Implement password change logic here
+                cout << "Success! Password has been changed." << endl;
+                Passcunter = 3;
+            } else if (password != Student.getpass(userIndex)) {
+                if (Passcunter == 0) {
+                    cout << "Wrong password! Please try again later." << endl;
                     break;
                 }
-                else if (password != Student.getpass(userIndex)) {
-                    cout << "Wrong pass! You have " << Passcunter << " try" << endl;
-                    cout << "Forget pass? (*hint* type \"Forget\" to check and change password)" << endl;
-                    Passcunter--;
-                }
-                if (password == Student.getpass(userIndex)) {
-                    cout << "Welcome " << Student.getUser(userIndex) << endl;
-                    return true;
-                }
-            } while (Passcunter >= 0);
-        }
-        else {
+                cout << "Wrong password! You have " << Passcunter << " tries left." << endl;
+                cout << "Forgot your password? (*hint* type \"Forget\" to check and change password)" << endl;
+                Passcunter--;
+            } else {
+                cout << "Welcome " << Student.getUser(userIndex) << endl;
+                return true;
+            }
+        } else {
             cout << "Username not found. Please try again." << endl;
         }
-    } while (!calleguser);
+    }
     return false;
 }
