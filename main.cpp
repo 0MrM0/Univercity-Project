@@ -2,8 +2,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include  <chrono>
-#include <ctime>
 #include <algorithm>
 
 using namespace std;
@@ -12,22 +10,22 @@ class Data_base
 {
     // make Data_base class way can use it for inhirate
     protected:
-        static  vector<string> User;
-        static  vector<string> Pass;
-        vector<int> collegian_list = {0, 1, 2, 3, 4 ,5}; //techer just can make 5 list
+        vector<string> User;
+        vector<string> Pass;
+        vector<int>    collegian_list = {0, 1, 2, 3, 4 ,5}; //techer just can make 5 list
         //0 in collegian_list for all list,other customize
-        static vector<double> collegian_point;
-        static vector<string> discription_descrptive;
-        static vector<string> discription_multiplechoice;
+        vector<double> collegian_point;
+        vector<string> discription_descrptive;
+        vector<string> discription_multiplechoice;
     public:
         Data_base() {
             //make space by constructor & make some files use for collegian list
-            fstream cl0("C:\\path\\to\\collegianlist0.csv");
-            fstream cl1("C:\\path\\to\\collegianlist1.csv");
-            fstream cl2("C:\\path\\to\\collegianlist2.csv");
-            fstream cl3("C:\\path\\to\\collegianlist3.csv");
-            fstream cl4("C:\\path\\to\\collegianlist4.csv");
-            fstream cl5("C:\\path\\to\\collegianlist5.csv");
+            fstream cl0("C:\\path\\to\\collegianlist0.txt");
+            fstream cl1("C:\\path\\to\\collegianlist1.txt");
+            fstream cl2("C:\\path\\to\\collegianlist2.txt");
+            fstream cl3("C:\\path\\to\\collegianlist3.txt");
+            fstream cl4("C:\\path\\to\\collegianlist4.txt");
+            fstream cl5("C:\\path\\to\\collegianlist5.txt");
         }
         const string& getUser(size_t index) const {
             return User[index];
@@ -35,13 +33,6 @@ class Data_base
         const string& getpass(size_t index) const {
             return Pass[index];
         }
-        static vector<string>::const_iterator findUser(const string& username) {
-            return std::find(User.begin(), User.end(), username);
-        }// Public member function to check if a username exists in the User vector
-        static bool userExists(vector<string>::const_iterator it) {
-            return it != User.end();
-        } // Public member function to get the index of a username in the User vector
-        static size_t getUserIndex(vector<string>::const_iterator it);
 };
 
 class Teacher : public Data_base {
@@ -51,20 +42,31 @@ class Teacher : public Data_base {
         vector<string> Multiplechoice_questions;
         vector<char>   Multiplechoice_answer;
     public:
-        Teacher() {}
+        Teacher()
+        {
+            User.push_back("Dr.Lotfi");
+            Pass.push_back("Lotfi123");
+        }
 };
 
 class Collegian : public Teacher {
     public:
         vector<string> collegian;
         Collegian() {
-            ifstream collegianUser("C:\\path\\to\\collegianUser.csv");
+            //Read data for
+            ifstream file("C:\\path\\to\\collegianlist0.txt"); //for now just me in the list
+            string line;
+            while (getline(file, line)) {
+                collegian.push_back(line);
+            }
+            file.close();
+            ifstream collegianUser("C:\\path\\to\\collegianUser.txt"); //for now just me in the list
             string collegianUserline;
             while (getline(collegianUser, collegianUserline)) {
-                User.push_back(collegianUserline);
+                collegian.push_back(collegianUserline);
             }
             collegianUser.close();
-            ifstream collegianPass("C:\\path\\to\\collegianPass.csv");
+            ifstream collegianPass("C:\\path\\to\\collegianPass.txt"); //for now just me in the list
             string collegianPassline;
             while (getline(collegianPass, collegianPassline)) {
                 Pass.push_back(collegianPassline);
@@ -75,13 +77,13 @@ class Collegian : public Teacher {
 
 void Welcomemassage();
 bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, string& password);
-bool C_authenticateUser(Collegian& Student, int& Passcunter, string& username, string& password);
+bool C_authenticateUser(Collegian& Me, int& Passcunter, string& username, string& password);
 
 int main()
 {
     Welcomemassage();
     Teacher Lotfi;
-    Collegian Student;
+    Collegian Me;
     string username;
     string password;
     char type;
@@ -95,7 +97,7 @@ int main()
         }
         // Continue with the rest of the program
     } else {
-        bool isCAuthenticated = C_authenticateUser(Student, Passcunter, username, password); //isCAuthenticated for callegian
+        bool isCAuthenticated = C_authenticateUser(Me, Passcunter, username, password); //isCAuthenticated for callegian
         if (!isCAuthenticated) {
             // Handle authentication failure
         }
@@ -105,7 +107,7 @@ int main()
 }
 
 void Welcomemassage() {
-    ifstream inputfile("C:\\path\\to\\Welcome.csv");
+    ifstream inputfile("C:\\path\\to\\Welcome.txt");
     string welcomemassage;
     string firstLine;
     while (getline(inputfile, welcomemassage)){
@@ -118,7 +120,7 @@ bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, strin
     do {
         cout << "Enter Username: " << endl;
         cin >> username;
-    } while(username != "Dr.Lotfi");
+    } while(Lotfi.getUser(0) != username);
     do {
         cout << "Enter Password: " << endl;
         cin >> password;
@@ -127,53 +129,55 @@ bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, strin
             cout << "Success Password is changed" << endl; // For test
             Passcunter = 3;
         }
-        else if ((password != "Lotfi123") && (Passcunter == 0)) {
+        else if (password != Lotfi.getpass(0) && Passcunter == 0) {
             cout << "Wrong pass! Try another 30 min" << endl; // Need get time from system
             break;
         }
-        else if (password != "Lotfi123") {
+        else if (password != Lotfi.getpass(0)) {
             cout << "Wrong pass! You have " << Passcunter << " try" << endl;
             cout << "Forget pass? (*hint* type \"Forget\" to check and change password)" << endl;
             Passcunter--;
         }
-        if (password == "Lotfi123") {
-            cout << "Welcome Dr.Lotfi" << endl;
+        if (password == Lotfi.getpass(0)) {
+            cout << "Welcome " << Lotfi.getUser(0) << endl;
             return true;
         }
     } while (Passcunter >= 0);
     return false;
 }
-bool C_authenticateUser(Collegian& Student, int& Passcunter, string& username, string& password) {
-    while (true) {
-        cout << "Enter Username: ";
+bool C_authenticateUser(Collegian& Me, int& Passcunter, string& username, string& password){
+    bool calleguser = false;
+    do {
+        cout << "Enter Username: " << endl;
         cin >> username;
-
-        auto it = Data_base::findUser(username);
-        if (Data_base::userExists(it)) {
-            size_t userIndex = Data_base::getUserIndex(it);
-
-            cout << "Enter Password: ";
-            cin >> password;
-
-            if (password == "Forget") {
-                // Implement password change logic here
-                cout << "Success! Password has been changed." << endl;
-                Passcunter = 3;
-            } else if (password != Student.getpass(userIndex)) {
-                if (Passcunter == 0) {
-                    cout << "Wrong password! Please try again later." << endl;
-                    break;
-                }
-                cout << "Wrong password! You have " << Passcunter << " tries left." << endl;
-                cout << "Forgot your password? (*hint* type \"Forget\" to check and change password)" << endl;
-                Passcunter--;
-            } else {
-                cout << "Welcome " << Student.getUser(userIndex) << endl;
-                return true;
+        for (size_t i = 0; i < Me.collegian.size(); ++i) {
+            if (Me.collegian[i] == username) {
+                calleguser = true;
+                break; // خروج از حلقه اگر نام کاربری پیدا شد
             }
-        } else {
-            cout << "Username not found. Please try again." << endl;
         }
-    }
+    } while(!calleguser);
+    do {
+        cout << "Enter Password: " << endl;
+        cin >> password;
+        if (password == "Forget") {
+            // First need change something in Teacher class
+            cout << "Success Password is changed" << endl; // For test
+            Passcunter = 3;
+        }
+        else if (password != Me.getpass() && Passcunter == 0) {
+            cout << "Wrong pass! Try another 30 min" << endl; // Need get time from system
+            break;
+        }
+        else if (password != Me.getpass()) {
+            cout << "Wrong pass! You have " << Passcunter << " try" << endl;
+            cout << "Forget pass? (*hint* type \"Forget\" to check and change password)" << endl;
+            Passcunter--;
+        }
+        if (password == Me.getpass()) {
+            cout << "Welcome " << Me.getUser() << endl;
+            return true;
+        }
+    } while (Passcunter >= 0);
     return false;
 }
