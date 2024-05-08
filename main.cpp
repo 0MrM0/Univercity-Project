@@ -145,7 +145,7 @@ bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, strin
     } while (Passcunter >= 0);
     return false;
 }
-/*bool C_authenticateUser(Collegian& Student, int& Passcunter, string& username, string& password){
+bool C_authenticateUser(Collegian& Student, int& Passcunter, string& username, string& password){
     bool calleguser = false;
     do {
         cout << "Enter Username: " << endl;
@@ -180,4 +180,4 @@ bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, strin
         }
     } while (Passcunter >= 0);
     return false;
-}*/
+}
