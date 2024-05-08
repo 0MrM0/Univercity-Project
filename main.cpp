@@ -201,7 +201,7 @@ bool C_authenticateUser(Collegian& Student, int& Passcunter, string& username, s
             Passcunter--;
         }
         if (password == Student.getPass(userIndex)) {
-            cout << "Welcome " << username << endl;
+            cout << "Welcome " << Student.collegian[userIndex - 1] << endl;
             return true;
         }
     } while (Passcunter >= 0);
