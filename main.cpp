@@ -33,6 +33,7 @@ class Data_base
         const string& getpass(size_t index) const {
             return Pass[index];
         }
+
 };
 
 class Teacher : public Data_base {
@@ -51,27 +52,7 @@ class Teacher : public Data_base {
 
 class Collegian : public Teacher {
     public:
-        vector<string> collegian;
-        Collegian() {
-            //Read data for
-            ifstream file("C:\\path\\to\\collegianlist0.txt"); //for now just me in the list
-            string line;
-            while (getline(file, line)) {
-                collegian.push_back(line);
-            }
-            file.close();
-            ifstream collegianUser("C:\\path\\to\\collegianUser.txt"); //for now just me in the list
-            string collegianUserline;
-            while (getline(collegianUser, collegianUserline)) {
-                collegian.push_back(collegianUserline);
-            }
-            collegianUser.close();
-            ifstream collegianPass("C:\\path\\to\\collegianPass.txt"); //for now just me in the list
-            string collegianPassline;
-            while (getline(collegianPass, collegianPassline)) {
-                Pass.push_back(collegianPassline);
-            }
-            collegianPass.close();
+
         }
 };
 
@@ -140,42 +121,6 @@ bool T_authenticateUser(Teacher& Lotfi, int& Passcunter, string& username, strin
         }
         if (password == Lotfi.getpass(0)) {
             cout << "Welcome " << Lotfi.getUser(0) << endl;
-            return true;
-        }
-    } while (Passcunter >= 0);
-    return false;
-}
-bool C_authenticateUser(Collegian& Student, int& Passcunter, string& username, string& password){
-    bool calleguser = false;
-    do {
-        cout << "Enter Username: " << endl;
-        cin >> username;
-        for (size_t i = 0; i < Student.collegian.size(); ++i) {
-            if (Student.collegian[i] == username) {
-                calleguser = true;
-                break; // خروج از حلقه اگر نام کاربری پیدا شد
-            }
-        }
-    } while(!calleguser);
-    do {
-        cout << "Enter Password: " << endl;
-        cin >> password;
-        if (password == "Forget") {
-            // First need change something in Teacher class
-            cout << "Success Password is changed" << endl; // For test
-            Passcunter = 3;
-        }
-        else if (password != Student.getpass() && Passcunter == 0) {
-            cout << "Wrong pass! Try another 30 min" << endl; // Need get time from system
-            break;
-        }
-        else if (password != Student.getpass()) {
-            cout << "Wrong pass! You have " << Passcunter << " try" << endl;
-            cout << "Forget pass? (*hint* type \"Forget\" to check and change password)" << endl;
-            Passcunter--;
-        }
-        if (password == Student.getpass()) {
-            cout << "Welcome " << Student.getUser() << endl;
             return true;
         }
     } while (Passcunter >= 0);
